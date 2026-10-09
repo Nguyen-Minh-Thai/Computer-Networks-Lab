@@ -43,3 +43,11 @@ java ChatServer
 # Terminal 2: Start Client
 java ChatClient
 ```
+
+---
+
+## Group Information: CN-L1
+- **Nguyễn Minh Thái** - MSSV: 2413133
+- **Nguyễn Lâm Sơn** - MSSV: 2413012
+- **Nguyễn Quang Bảo** - MSSV: 2410276
+

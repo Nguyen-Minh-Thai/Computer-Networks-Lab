@@ -12,5 +12,8 @@ Repository for Computer Networks course laboratory assignments at Faculty of Com
 
 ---
 
-## Author
-- GitHub: [Nguyen-Minh-Thai](https://github.com/Nguyen-Minh-Thai)
+## Group: CN-L1
+- **Nguyễn Minh Thái** - MSSV: 2413133 (GitHub: [Nguyen-Minh-Thai](https://github.com/Nguyen-Minh-Thai))
+- **Nguyễn Lâm Sơn** - MSSV: 2413012
+- **Nguyễn Quang Bảo** - MSSV: 2410276
+

@@ -2,9 +2,18 @@
 *.class
 **/*.class
 
-# Log files
+# Log and auxiliary LaTeX files
 *.log
+*.aux
+*.out
+*.synctex.gz
+*.toc
+
+# LaTeX report and images
+BaoCao_Lab1c.tex
+**/BaoCao_Lab1c.tex
+images/
+**/images/
 
 # Ignore root leftover if locked
 /Sol Lab1b.pdf
-

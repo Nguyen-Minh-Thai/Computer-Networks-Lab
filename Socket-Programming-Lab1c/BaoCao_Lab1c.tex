@@ -1,0 +1,329 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{geometry}
+\geometry{
+    top=25mm,
+    bottom=25mm,
+    left=25mm,
+    right=25mm
+}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{microtype}
+
+% Cấu hình liên kết hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!80!black,
+    citecolor=blue!80!black,
+    urlcolor=blue!80!black
+}
+
+% Cấu hình header & footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Mạng máy tính - Lab 1c}
+\lhead{\small Trường ĐH Bách Khoa - ĐHQG TP.HCM}
+\cfoot{\thepage}
+
+% Cấu hình listings hiển thị mã nguồn Java
+\definecolor{javared}{rgb}{0.6,0,0}
+\definecolor{javagreen}{rgb}{0.25,0.5,0.35}
+\definecolor{javapurple}{rgb}{0.5,0,0.35}
+\definecolor{javadocblue}{rgb}{0.25,0.35,0.75}
+
+\lstset{
+    language=Java,
+    basicstyle=\fontsize{9}{11}\ttfamily,
+    keywordstyle=\color{javapurple}\bfseries,
+    stringstyle=\color{javared},
+    commentstyle=\color{javagreen},
+    morecomment=[s][\color{javadocblue}]{/**}{*/},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    tabsize=4,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    frame=single,
+    rulecolor=\color{black!20},
+    backgroundcolor=\color{black!2},
+    captionpos=b,
+    inputencoding=utf8
+}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+    {\large \textbf{ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH}}\\[0.2cm]
+    {\large \textbf{TRƯỜNG ĐẠI HỌC BÁCH KHOA}}\\[0.2cm]
+    {\large \textbf{KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH}}\\[1.5cm]
+    
+    \includegraphics[width=3.5cm]{https://upload.wikimedia.org/wikipedia/commons/d/de/Logo_DH_Bach_Khoa_HCM.png} % Hoặc logo Bách Khoa
+    \vspace{1.5cm}
+    
+    {\Large \textbf{BÁO CÁO THỰC HÀNH MÔN MẠNG MÁY TÍNH}}\\[0.4cm]
+    {\LARGE \textbf{LAB 1c: SOCKET PROGRAMMING IN JAVA}}\\[0.3cm]
+    {\large \textit{Xây dựng ứng dụng tải trang Web và Chat đa luồng Client - Server}}\\[2.5cm]
+    
+    \begin{flushleft}
+        \large
+        \textbf{Giảng viên hướng dẫn:} \dotfill\\[0.3cm]
+        \textbf{Sinh viên thực hiện:} Nguyễn Minh Thái\\[0.3cm]
+        \textbf{Mã số sinh viên (MSSV):} \dotfill\\[0.3cm]
+        \textbf{Lớp / Nhóm thực hành:} \dotfill\\[0.3cm]
+        \textbf{Mã nguồn (GitHub):} \href{https://github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}{github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}
+    \end{flushleft}
+    
+    \vfill
+    {\large TP. Hồ Chí Minh, Năm 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ==================== NỘI DUNG CHÍNH ====================
+
+\section{Mục tiêu bài thực hành (Objectives)}
+Mục tiêu của bài thực hành \textbf{Lab 1c (Socket Programming in Java)} bao gồm:
+\begin{enumerate}
+    \item Nắm vững kỹ thuật lập trình Socket mạng tầng Giao vận (Transport Layer - TCP) trong ngôn ngữ Java.
+    \item Vận dụng giao thức HTTP ở tầng Ứng dụng để kết nối và tải nội dung trang web từ Web Server.
+    \item Tìm hiểu và cài đặt mô hình đa luồng (Multithreading) trong Java để xử lý đồng thời nhiều tiến trình.
+    \item Kiểm chứng thực nghiệm các cơ chế dừng luồng (\textit{Stop a thread}) và giải thích hiện tượng tắc nghẽn (\textit{blocking I/O}).
+    \item Xây dựng hoàn chỉnh ứng dụng Chat đa luồng theo mô hình Client - Server với giao diện đồ họa người dùng (GUI Swing).
+\end{enumerate}
+
+\bigskip
+
+\section{Exercise 1: Tải nội dung trang Web (Download Homepage)}
+
+\subsection{Yêu cầu bài toán}
+Viết chương trình Java kết nối tới một máy chủ Web (Web Server) thông qua Socket TCP và tải nội dung mã nguồn HTML của trang chủ website đó lưu vào máy tính cục bộ (thử nghiệm với \texttt{www.google.com}).
+
+\subsection{Phân tích và Giải pháp cài đặt}
+Để tải trang web thông qua Socket TCP tầng Giao vận:
+\begin{itemize}
+    \item \textbf{Cổng kết nối:} Web Server HTTP thông thường lắng nghe tại cổng mặc định là \textbf{80}.
+    \item \textbf{Bắt tay HTTP Request:} Sau khi thiết lập kết nối TCP bằng \texttt{Socket(host, 80)}, chương trình gửi bản tin HTTP GET theo chuẩn giao thức:
+    \begin{verbatim}
+GET / HTTP/1.0\r\n
+Host: www.google.com\r\n
+User-Agent: Mozilla/5.0\r\n
+\r\n
+    \end{verbatim}
+    \textit{Lưu ý:} Sử dụng phiên bản \texttt{HTTP/1.0} để máy chủ tự động đóng kết nối ngay sau khi gửi hết dữ liệu, giúp luồng đọc nhận biết tín hiệu kết thúc (\texttt{-1}).
+    \item \textbf{Tách Header và Body:} Dữ liệu phản hồi từ Web Server bao gồm phần HTTP Header và nội dung Body ngăn cách nhau bởi 4 byte ký tự liên tiếp: \texttt{\textbackslash r\textbackslash n\textbackslash r\textbackslash n}. Chương trình quét mảng byte để tìm vị trí này, in Header ra màn hình và trích xuất phần Body ghi vào file \texttt{homepage.html}.
+\end{itemize}
+
+\subsection{Đoạn mã nguồn chính (\texttt{DownloadHomepage.java})}
+\begin{lstlisting}[caption={Đoạn code kết nối socket và tải trang web}]
+try (Socket socket = new Socket(host, 80)) {
+    System.out.println("Connected to " + host + " (" + socket.getInetAddress() + ")");
+
+    // 1. Gửi HTTP Request
+    OutputStream out = socket.getOutputStream();
+    String request = "GET / HTTP/1.0\r\n"
+                   + "Host: " + host + "\r\n"
+                   + "User-Agent: Mozilla/5.0\r\n\r\n";
+    out.write(request.getBytes("ISO-8859-1"));
+    out.flush();
+
+    // 2. Đọc toàn bộ phản hồi
+    InputStream in = socket.getInputStream();
+    ByteArrayOutputStream buf = new ByteArrayOutputStream();
+    byte[] chunk = new byte[4096];
+    int n;
+    while ((n = in.read(chunk)) != -1) {
+        buf.write(chunk, 0, n);
+    }
+    byte[] data = buf.toByteArray();
+
+    // 3. Tách Header và Body (ngăn cách bởi \r\n\r\n)
+    int bodyStart = -1;
+    for (int i = 0; i + 3 < data.length; i++) {
+        if (data[i] == '\r' && data[i + 1] == '\n'
+                && data[i + 2] == '\r' && data[i + 3] == '\n') {
+            bodyStart = i + 4;
+            break;
+        }
+    }
+    // 4. Lưu body ra file homepage.html
+    if (bodyStart >= 0) {
+        try (FileOutputStream file = new FileOutputStream("homepage.html")) {
+            file.write(data, bodyStart, data.length - bodyStart);
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{Kết quả thực nghiệm}
+\begin{itemize}
+    \item \textbf{Kết quả trên Terminal:} Chương trình phân giải IP của Google thành công (\texttt{142.251.157.119}), nhận mã phản hồi \texttt{HTTP/1.0 200 OK} và thông báo lưu thành công \texttt{89926 bytes} vào file \texttt{homepage.html}.
+    \item \textbf{Hiển thị trên trình duyệt:} Khi mở file \texttt{homepage.html} cục bộ, giao diện trang chủ Google được hiển thị đầy đủ (ô tìm kiếm, nút bấm, các liên kết ngôn ngữ).
+    \item \textbf{Giải thích hiện tượng offline:} Tính năng tìm kiếm không trả về kết quả vì form hành động của trang sử dụng đường dẫn tương đối (\texttt{/search}), khi chạy offline trình duyệt sẽ tìm file cục bộ trên máy thay vì gửi đến máy chủ Google. Tương tự, hình ảnh logo không hiển thị do thiếu đường dẫn trực tuyến. Điều này hoàn toàn khớp với tính chất của việc tải mã nguồn HTML tĩnh thông qua Socket.
+\end{itemize}
+
+% [Chèn ảnh minh chứng Exercise 1 tại đây]
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{path_to_screenshot_ex1.png}
+%     \caption{Kết quả thực thi Exercise 1: Terminal in Header và file homepage.html trên trình duyệt}
+% \end{figure}
+
+\bigskip
+
+\section{Mục 3: Đa luồng trong Java (Multithreading) \& Cơ chế Dừng luồng}
+
+\subsection{Minh họa Đa luồng với \texttt{PrimeRun.java}}
+\begin{itemize}
+    \item \textbf{Mô tả:} Lớp \texttt{PrimeRun} cài đặt giao diện \texttt{Runnable}, thực hiện tính toán và in ra các số nguyên tố lớn hơn tham số \texttt{minPrime}.
+    \item \textbf{Thực thi:} Hàm \texttt{main} tạo ra 2 luồng độc lập:
+    \begin{itemize}
+        \item Luồng \texttt{T1}: Bắt đầu tìm số nguyên tố từ $143$.
+        \item Luồng \texttt{T2}: Bắt đầu tìm số nguyên tố từ $1000$.
+    \end{itemize}
+    \item \textbf{Kết quả kiểm chứng:} Các dòng xuất ra của \texttt{T1} và \texttt{T2} in xen kẽ nhau trên Terminal, chứng minh hệ điều hành đang cấp phát thời gian CPU để cả 2 luồng hoạt động đồng thời (concurrent execution). Sau $20\text{ ms}$, hàm \texttt{interrupt()} được gọi và cả 2 luồng dừng ngay lập tức nhờ kiểm tra cờ \texttt{!Thread.currentThread().isInterrupted()}.
+\end{itemize}
+
+\subsection{Kiểm nghiệm Cơ chế Dừng luồng (\texttt{StopTest.java})}
+Trong đề bài đưa ra đoạn mã mẫu thử nghiệm dừng luồng lắng nghe kết nối socket:
+\begin{lstlisting}[caption={Đoạn mã dừng luồng trong đề bài}]
+public void stop() {
+    running = false;
+    this.interrupt();
+}
+public void run() {
+    running = true;
+    while (running) {
+        Socket s = socket.accept();
+        ...
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Câu hỏi: Chuyện gì xảy ra khi gọi \texttt{Thread.interrupt()}?}
+👉 \textbf{Trả lời:} \textbf{Luồng KHÔNG THỂ DỪNG ĐƯỢC!}
+
+\subsubsection{Giải thích bản chất nguyên nhân:}
+\begin{enumerate}
+    \item \textbf{Hiện tượng Tắc nghẽn (Blocking I/O):} Phương thức \texttt{ServerSocket.accept()} là một lời gọi I/O đồng bộ bị chặn (blocking call). Khi chưa có client nào kết nối tới, luồng sẽ bị CPU "treo" tại dòng lệnh \texttt{accept()} để chờ đợi.
+    \item \textbf{Giới hạn của \texttt{interrupt()}:} Trong Java, lệnh \texttt{Thread.interrupt()} chỉ có tác dụng đánh thức các phương thức ném ra ngoại lệ \texttt{InterruptedException} (như \texttt{Thread.sleep()}, \texttt{Object.wait()}, \texttt{Thread.join()}). Các thao tác Blocking I/O mạng truyền thống như \texttt{accept()} hoàn toàn \textbf{bỏ qua cờ interrupt}.
+    \item \textbf{Hậu quả:} Dù biến \texttt{running} đã chuyển thành \texttt{false}, nhưng luồng vẫn bị kẹt cứng ở \texttt{accept()} và không bao giờ quay lại đầu vòng lặp để kiểm tra điều kiện \texttt{while (running)}. Luồng sẽ sống mãi mãi nếu không có kết nối nào đến.
+\end{enumerate}
+
+\subsubsection{Giải pháp chuẩn xác:}
+Để giải phóng một luồng đang bị kẹt ở \texttt{accept()}, ta phải gọi:
+$$\texttt{serverSocket.close();}$$
+Khi \texttt{ServerSocket} bị đóng từ luồng khác, phương thức \texttt{accept()} ngay lập tức bị ép giải phóng và ném ra ngoại lệ:
+$$\texttt{java.net.SocketException: Socket closed}$$
+Khối \texttt{try-catch} sẽ bắt lấy ngoại lệ này, luồng thoát ra ngoài vòng lặp an toàn và kết thúc.
+
+\subsubsection{Kết quả thực nghiệm trên Terminal:}
+\begin{verbatim}
+Testing running = false and t.interrupt()...
+After interrupt, is thread alive? true
+Testing serverSocket.close()...
+accept() exited with: java.net.SocketException: Socket closed
+Thread has stopped.
+After close, is thread alive? false
+\end{verbatim}
+Kết quả thực nghiệm đã chứng minh rõ ràng: Sau khi gọi \texttt{interrupt()}, luồng vẫn sống (\texttt{true}); chỉ sau khi gọi \texttt{close()}, luồng mới thực sự dừng (\texttt{false}).
+
+% [Chèn ảnh minh chứng PrimeRun & StopTest tại đây]
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{path_to_screenshot_stoptest.png}
+%     \caption{Kết quả kiểm chứng đa luồng PrimeRun và cơ chế dừng thread StopTest}
+% \end{figure}
+
+\bigskip
+
+\section{Exercise 2 \& 3: Ứng dụng Chat Đa luồng Client - Server}
+
+\subsection{Thiết kế Giao diện Người dùng (Exercise 2 - GUI)}
+Ứng dụng sử dụng thư viện \textbf{Java Swing} để thiết kế giao diện đồ họa thân thiện:
+\begin{itemize}
+    \item \textbf{Giao diện Server (\texttt{ChatServer.java}):}
+    \begin{itemize}
+        \item Ô nhập Port lắng nghe (mặc định \texttt{9999}).
+        \item Nút bấm trạng thái linh hoạt \textbf{"Start / Stop"}.
+        \item Khung văn bản nhật ký (\texttt{JTextArea}) cuộn tự động hiển thị lịch sử kết nối và tin nhắn.
+    \end{itemize}
+    \item \textbf{Giao diện Client (\texttt{ChatClient.java}):}
+    \begin{itemize}
+        \item Thanh điều khiển chính (\texttt{Chat Client - Main}): Cho phép cấu hình Host, Port, Name và nút \textbf{"New connection"} để mở nhiều cửa sổ chat độc lập.
+        \item Cửa sổ chat riêng (\texttt{ChatWindow}): Mỗi kết nối tương ứng một cửa sổ độc lập gồm khung hiển thị tin nhắn và ô nhập liệu dưới cùng để gửi tin nhắn khi nhấn \texttt{Enter}.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Kiến trúc Đa luồng (Exercise 3 - Multithread Architecture)}
+Hệ thống được thiết kế theo đúng mô hình phân cấp luồng trong tài liệu hướng dẫn:
+
+\subsubsection{1. Phía Server (Server-side Thread Hierarchy):}
+\begin{itemize}
+    \item \textbf{Main Window Thread (GUI):} Luồng đồ họa quản lý giao diện Swing.
+    \item \textbf{Child Thread (Listener Thread):} Khi nhấn nút \textit{Start}, một luồng con chạy ngầm vòng lặp \texttt{serverSocket.accept()} để liên tục đón kết nối mới từ client mà không làm đơ giao diện Server.
+    \item \textbf{Grand-child Thread (\texttt{ClientHandler}):} Mỗi khi một client kết nối thành công, Server tạo ra một luồng riêng đại diện cho Client đó. Lớp \texttt{ClientHandler} liên tục đọc \texttt{InputStream} từ socket của client và gọi hàm \texttt{broadcast()} để chuyển tiếp tin nhắn đến toàn bộ danh sách các Client đang hoạt động trong phòng.
+\end{itemize}
+
+\subsubsection{2. Phía Client (Client-side Thread Hierarchy):}
+\begin{itemize}
+    \item \textbf{Main Window Thread:} Quản lý form nhập thông tin ban đầu.
+    \item \textbf{Chat Window Thread:} Mỗi khi bấm \textit{New connection}, một cửa sổ chat mới được khởi tạo và kết nối TCP Socket tới Server.
+    \item \textbf{Grand-child Thread (Reader Thread):} Một luồng chạy nền riêng biệt chuyên lắng nghe \texttt{InputStream} từ socket. Khi Server chuyển tiếp tin nhắn đến, luồng này nhận và đưa tin nhắn lên giao diện bằng \texttt{SwingUtilities.invokeLater()}, đảm bảo việc nhận tin diễn ra đồng thời mà người dùng vẫn gõ phím gửi tin nhắn bình thường.
+\end{itemize}
+
+\subsection{Điểm cộng Kỹ thuật trong Cài đặt Mã nguồn}
+\begin{enumerate}
+    \item \textbf{Hỗ trợ Tiếng Việt có dấu (UTF-8):} Luồng nhập xuất giữa Client và Server sử dụng \texttt{InputStreamReader} và \texttt{OutputStreamWriter} cấu hình bảng mã chuẩn \texttt{"UTF-8"}, đảm bảo tin nhắn tiếng Việt không bị lỗi font.
+    \item \textbf{Đồng bộ an toàn (Thread-safe Collections):} Server sử dụng \texttt{CopyOnWriteArrayList<ClientHandler>} để quản lý danh sách client, tránh xung đột bộ nhớ (\texttt{ConcurrentModificationException}) khi có client ngắt kết nối đúng lúc đang gửi tin broadcast.
+    \item \textbf{Giải phóng tài nguyên sạch sẽ (Clean Disconnection):} Khi người dùng tắt cửa sổ chat, sự kiện \texttt{windowClosed} kích hoạt đóng Socket, ClientHandler tự động xóa client khỏi danh sách và Server phát thông báo \texttt{*** [Name] left ***} tới các client còn lại.
+\end{enumerate}
+
+\subsection{Kết quả Thực nghiệm và Kiểm thử}
+\begin{itemize}
+    \item \textbf{Kịch bản thử nghiệm:} Khởi động 1 máy chủ \texttt{ChatServer} (Port 9999) và mở đồng thời 3 Client mang tên: \textbf{Thái}, \textbf{Sơn}, \textbf{Bảo}.
+    \item \textbf{Kết quả:}
+    \begin{itemize}
+        \item Cả 3 người dùng kết nối thành công và nhận được thông báo tham gia của nhau.
+        \item Khi người dùng \textbf{Thái} gửi: \textit{"Xin chào mọi người!"}, tin nhắn ngay lập tức hiển thị đồng thời ở cửa sổ của \textbf{Sơn}, \textbf{Bảo} và trên bảng Log của Server.
+        \item Tương tác gửi nhận tin nhắn giữa các thành viên diễn ra theo thời gian thực (Real-time broadcast) mà không có độ trễ hay xung đột luồng.
+    \end{itemize}
+\end{itemize}
+
+% [Chèn ảnh minh chứng Chat Application tại đây]
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{path_to_screenshot_chat.png}
+%     \caption{Kết quả thực nghiệm ứng dụng Chat đa luồng với 3 client Thái, Sơn, Bảo}
+% \end{figure}
+
+\bigskip
+
+\section{Kết luận \& Bài học kinh nghiệm}
+\begin{itemize}
+    \item Bài thực hành giúp củng cố toàn diện kiến thức về lập trình Socket mạng tầng Transport (giao thức TCP), nắm vững cách bắt tay HTTP ở tầng Application.
+    \item Hiểu rõ bản chất hoạt động của mô hình đa luồng (Multithread) trong việc giải quyết bài toán phục vụ nhiều người dùng đồng thời và xử lý hiện tượng Blocking I/O.
+    \item Toàn bộ mã nguồn bài thực hành đã được kiểm thử thành công và lưu trữ quản lý phiên bản trên kho GitHub:
+    \begin{center}
+        \textbf{\url{https://github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}}
+    \end{center}
+\end{itemize}
+
+\end{document}

@@ -1,7 +1,8 @@
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[T5,T1]{fontenc}
+\usepackage[vietnamese,english]{babel}
 \usepackage{geometry}
 \geometry{
     top=20mm,
@@ -63,12 +64,12 @@
     backgroundcolor=\color{gray!5}
 }
 
-% Box ghi chú câu trả lời của sinh viên
+% Box ghi chú câu trả lời của sinh viên (Viết bằng Tiếng Việt)
 \newtcolorbox{solutionbox}[1][]{
     colback=blue!2!white,
     colframe=blue!70!black,
     fonttitle=\bfseries\sffamily,
-    title=Student's Report \& Implementation,
+    title=Báo cáo \& Bài làm của Sinh viên,
     #1
 }
 
@@ -90,6 +91,8 @@
 & 3. Nguyễn Quang Bảo & \textbf{Student No.:} & 2410276 \\
 \bottomrule
 \end{tabularx}
+
+\vspace{0.4cm}
 
 % ==================== I. OBJECTIVES ====================
 \section*{I. Objectives}
@@ -124,21 +127,21 @@ catch (UnknownHostException e) {
 \noindent\textit{Create a program that connects to a web server and downloads the homepage of this website to local computer.\\
 Ex.: You can test your program with: www.google.com}
 
-\begin{solutionbox}[title=Solution for Exercise 1: Download Homepage]
-\textbf{1. Implementation Overview (\texttt{DownloadHomepage.java}):}
+\begin{solutionbox}[title=Báo cáo \& Bài làm: Exercise 1 -- Tải Trang chủ Web]
+\textbf{1. Phân tích \& Nguyên lý hoạt động (\texttt{DownloadHomepage.java}):}
 \begin{itemize}
-    \item \textbf{TCP Connection:} Creates a client socket connecting to port 80 (HTTP) of \texttt{www.google.com}.
-    \item \textbf{HTTP Request:} Sends a standard HTTP/1.0 GET request:
+    \item \textbf{Khởi tạo kết nối TCP:} Tạo socket kết nối tới cổng 80 (cổng HTTP mặc định) của máy chủ \texttt{www.google.com}.
+    \item \textbf{Gửi bản tin HTTP Request:} Gửi yêu cầu HTTP GET theo phiên bản \texttt{HTTP/1.0}:
     \begin{verbatim}
     GET / HTTP/1.0\r\n
     Host: www.google.com\r\n
     User-Agent: Mozilla/5.0\r\n\r\n
     \end{verbatim}
-    Using HTTP/1.0 ensures the server automatically closes the connection once transmission is finished, so the stream reaches EOF (\texttt{-1}).
-    \item \textbf{Header \& Body Parsing:} Reads all incoming bytes into a buffer, detects the HTTP separator sequence \texttt{\textbackslash r\textbackslash n\textbackslash r\textbackslash n}, prints the HTTP response headers to console, and writes the remaining body bytes into \texttt{homepage.html}.
+    Việc dùng \texttt{HTTP/1.0} đảm bảo máy chủ tự động ngắt kết nối sau khi gửi hết dữ liệu, giúp luồng đọc nhận biết điểm kết thúc (\texttt{-1}).
+    \item \textbf{Tách Header và lưu Body:} Đọc toàn bộ luồng byte vào bộ đệm, quét tìm chuỗi phân cách chuẩn \texttt{\textbackslash r\textbackslash n\textbackslash r\textbackslash n}. In toàn bộ HTTP Header ra màn hình và trích xuất phần Body lưu vào file \texttt{homepage.html}.
 \end{itemize}
 
-\textbf{2. Key Source Code:}
+\textbf{2. Đoạn mã nguồn thực thi chính:}
 \begin{lstlisting}
 try (Socket socket = new Socket(host, 80)) {
     OutputStream out = socket.getOutputStream();
@@ -153,7 +156,7 @@ try (Socket socket = new Socket(host, 80)) {
     while ((n = in.read(chunk)) != -1) buf.write(chunk, 0, n);
     byte[] data = buf.toByteArray();
 
-    // Split header and body at \r\n\r\n
+    // Tach header va body tai chuoi \r\n\r\n
     int bodyStart = -1;
     for (int i = 0; i + 3 < data.length; i++) {
         if (data[i] == '\r' && data[i+1] == '\n' && data[i+2] == '\r' && data[i+3] == '\n') {
@@ -169,17 +172,17 @@ try (Socket socket = new Socket(host, 80)) {
 }
 \end{lstlisting}
 
-\textbf{3. Test Results \& Observations:}
+\textbf{3. Kết quả thực nghiệm \& Nhận xét:}
 \begin{itemize}
-    \item \textbf{Terminal output:} Successfully connected to Google server IP \texttt{142.251.157.119:80}, received \texttt{HTTP/1.0 200 OK}, and saved \texttt{89,926 bytes} to \texttt{homepage.html}.
-    \item \textbf{Browser view:} Opening \texttt{homepage.html} renders the offline Google homepage layout. Search actions and remote logo images rely on relative URLs (\texttt{/search}), confirming the static HTML nature of socket downloads.
+    \item \textbf{Kết quả Terminal:} Kết nối thành công tới IP của Google (\texttt{142.251.157.119:80}), nhận mã phản hồi \texttt{HTTP/1.0 200 OK}, và lưu thành công \texttt{89,926 bytes} vào file \texttt{homepage.html}.
+    \item \textbf{Kết quả trình duyệt:} Khi mở file \texttt{homepage.html} offline, cấu trúc trang chủ Google hiển thị đầy đủ (ô tìm kiếm, nút bấm). Nút tìm kiếm không hoạt động và logo không tải được do các tài nguyên này dùng đường dẫn tương đối (\texttt{/search}), đây là đặc điểm tự nhiên khi tải mã nguồn HTML tĩnh bằng Socket.
 \end{itemize}
 
 \vspace{0.2cm}
 \begin{center}
     \includegraphics[width=0.48\textwidth]{images/homepage_log.jpg}\hfill
     \includegraphics[width=0.48\textwidth]{images/homepage.jpg}\\[3pt]
-    {\footnotesize \textbf{Figure 1:} (Left) Terminal HTTP response log; (Right) Rendered \texttt{homepage.html} in browser.}
+    {\footnotesize \textbf{Hình 1:} (Trái) Log phản hồi HTTP trên Terminal; (Phải) File \texttt{homepage.html} hiển thị trên trình duyệt.}
 \end{center}
 \end{solutionbox}
 
@@ -205,16 +208,16 @@ Close connection & Close connection \\
 
 \subsubsection*{Exercise 2: Design the user interface for the chat application}
 
-\begin{solutionbox}[title=Solution for Exercise 2: Chat Application GUI Design]
-\textbf{1. Server Interface (\texttt{ChatServer.java}):}
+\begin{solutionbox}[title=Báo cáo \& Bài làm: Exercise 2 -- Thiết kế Giao diện Ứng dụng Chat]
+\textbf{1. Giao diện Server (\texttt{ChatServer.java}):}
 \begin{itemize}
-    \item \textbf{Components:} A \texttt{JTextField} for the listening port (default \texttt{9999}), a toggle \texttt{JButton} (\textit{Start / Stop}), and a non-editable, scrollable \texttt{JTextArea} displaying connection and broadcast logs.
+    \item Sử dụng Java Swing xây dựng cửa sổ điều khiển gồm: ô nhập Port lắng nghe (mặc định \texttt{9999}), nút bấm chuyển đổi trạng thái (\textit{Start / Stop}), và khung \texttt{JTextArea} có thanh cuộn hiển thị nhật ký kết nối và tin nhắn.
 \end{itemize}
 
-\textbf{2. Client Interface (\texttt{ChatClient.java}):}
+\textbf{2. Giao diện Client (\texttt{ChatClient.java}):}
 \begin{itemize}
-    \item \textbf{Main Controller Form:} Inputs for \texttt{Host} (default \texttt{localhost}), \texttt{Port} (default \texttt{9999}), and \texttt{Name} (username), with a \textbf{"New connection"} button to launch independent chat sessions.
-    \item \textbf{Chat Window (\texttt{ChatWindow}):} Each connection spawns a distinct window featuring a scrollable conversation log area and a text input field at the bottom to send messages upon pressing \texttt{Enter}.
+    \item \textbf{Form điều khiển chính (\texttt{Chat Client - Main}):} Ô nhập \texttt{Host} (\texttt{localhost}), \texttt{Port} (\texttt{9999}), \texttt{Name} (tên người dùng) và nút \textbf{"New connection"} để khởi tạo nhiều kết nối chat độc lập.
+    \item \textbf{Cửa sổ chat riêng (\texttt{ChatWindow}):} Mỗi kết nối mở ra một cửa sổ riêng biệt với khung hiển thị lịch sử chat và ô nhập tin nhắn bên dưới, tự động gửi tin khi nhấn phím \texttt{Enter}.
 \end{itemize}
 \end{solutionbox}
 
@@ -238,10 +241,10 @@ PrimeRun p = new PrimeRun(143);
 new Thread(p).start();
 \end{lstlisting}
 
-\begin{solutionbox}[title=Solution for Multithread Execution (PrimeRun.java)]
+\begin{solutionbox}[title=Báo cáo \& Bài làm: Lập trình Đa luồng (PrimeRun.java)]
 \begin{itemize}
-    \item \textbf{Implementation:} Class \texttt{PrimeRun} computes primes exceeding \texttt{minPrime} in a loop guarded by \texttt{!Thread.currentThread().isInterrupted()}.
-    \item \textbf{Concurrent Test:} In \texttt{main()}, two threads \texttt{T1} (min: 143) and \texttt{T2} (min: 1000) run simultaneously. Console outputs show interleaved prime values from both threads until interrupted after 20ms, demonstrating successful concurrency.
+    \item \textbf{Nguyên lý cài đặt:} Lớp \texttt{PrimeRun} cài đặt \texttt{Runnable}, tính toán các số nguyên tố lớn hơn \texttt{minPrime} và kiểm tra cờ ngắt \texttt{!Thread.currentThread().isInterrupted()} trong vòng lặp.
+    \item \textbf{Kiểm chứng chạy song song:} Trong hàm \texttt{main()}, hai luồng \texttt{T1} (mốc 143) và \texttt{T2} (mốc 1000) được khởi chạy đồng thời. Kết quả trên terminal cho thấy các số nguyên tố của \texttt{T1} và \texttt{T2} được in xen kẽ nhau, chứng minh CPU đã phân bổ thời gian thực thi song song (concurrency). Sau 20ms, lệnh \texttt{interrupt()} được gọi và cả hai luồng dừng lại an toàn.
 \end{itemize}
 \end{solutionbox}
 
@@ -263,27 +266,29 @@ public void run() {
 }
 \end{lstlisting}
 
-\begin{solutionbox}[title=Answer \& Analysis: Why Thread.interrupt() Fails and How to Fix It]
-\textbf{1. What happens when calling \texttt{stop()} with \texttt{this.interrupt()}?}
+\begin{solutionbox}[title=Phân tích \& Giải thích: Cơ chế Dừng luồng khi bị tắc nghẽn ở accept()]
+\textbf{1. Hiện tượng xảy ra khi gọi \texttt{stop()} dùng \texttt{this.interrupt()}:}
 \begin{itemize}
-    \item \textbf{Result:} \textbf{The thread DOES NOT stop! It remains blocked and alive indefinitely.}
+    \item \textbf{Kết luận:} \textbf{Luồng KHÔNG THỂ DỪNG ĐƯỢC! Luồng tiếp tục bị kẹt và sống mãi mãi.}
 \end{itemize}
 
-\textbf{2. Root Cause Analysis:}
+\textbf{2. Bản chất nguyên nhân:}
 \begin{enumerate}
-    \item \textbf{Blocking I/O Call:} \texttt{ServerSocket.accept()} is a synchronous blocking operation. When no incoming client connection arrives, the thread is suspended at \texttt{accept()} by the operating system kernel.
-    \item \textbf{Interrupt Ignored by Blocking Sockets:} In standard Java I/O, \texttt{accept()} does not throw \texttt{InterruptedException}. Calling \texttt{Thread.interrupt()} only sets the thread's interrupt status flag, which \texttt{accept()} completely ignores.
-    \item \textbf{Loop Never Re-evaluates:} Because execution is blocked inside \texttt{accept()}, the thread never reaches the top of the \texttt{while (running)} loop to evaluate \texttt{running == false}.
+    \item \textbf{Lời gọi bị chặn (Blocking I/O):} Phương thức \texttt{ServerSocket.accept()} là thao tác I/O đồng bộ bị chặn. Khi chưa có client nào kết nối, CPU treo luồng tại dòng này để đợi kết nối mạng.
+    \item \textbf{Cơ chế \texttt{interrupt()} bị vô hiệu:} Trong Java I/O truyền thống, \texttt{accept()} không ném ra ngoại lệ \texttt{InterruptedException}. Gọi \texttt{this.interrupt()} chỉ bật cờ trạng thái ngắt, nhưng hàm \texttt{accept()} hoàn toàn phớt lờ cờ này.
+    \item \textbf{Không bao giờ quay lại vòng lặp:} Do luồng đang bị kẹt cứng ở \texttt{accept()}, nó không thể thoát ra để quay lên đầu vòng lặp kiểm tra điều kiện \texttt{while (running)}. Vì vậy, gán \texttt{running = false} không có tác dụng.
 \end{enumerate}
 
-\textbf{3. Correct Solution (\texttt{StopTest.java}):}
+\textbf{3. Giải pháp chuẩn xác (\texttt{StopTest.java}):}
 \begin{itemize}
-    \item To unblock a thread stuck in \texttt{accept()}, we must close the underlying server socket:
+    \item Để giải phóng luồng đang bị kẹt ở \texttt{accept()}, ta phải đóng socket từ luồng khác:
     $$\texttt{serverSocket.close();}$$
-    \item This forces \texttt{accept()} to immediately unblock and throw a \texttt{SocketException: Socket closed}. The catch block catches it, allowing the loop to exit cleanly.
+    \item Thao tác này ép buộc \texttt{accept()} giải phóng ngay lập tức và ném ra ngoại lệ:
+    $$\texttt{java.net.SocketException: Socket closed}$$
+    Khối \texttt{catch} sẽ bắt lấy ngoại lệ, luồng thoát khỏi vòng lặp và kết thúc an toàn.
 \end{itemize}
 
-\textbf{4. Experimental Verification Output:}
+\textbf{4. Kết quả thực nghiệm in ra từ Terminal:}
 \begin{verbatim}
 Testing running = false and t.interrupt()...
 After interrupt, is thread alive? true
@@ -296,7 +301,7 @@ After close, is thread alive? false
 \vspace{0.2cm}
 \begin{center}
     \includegraphics[width=0.68\textwidth]{images/PrimeRun_and_StopTest.jpg}\\[3pt]
-    {\footnotesize \textbf{Figure 2:} Verification output of PrimeRun concurrency and StopTest thread stopping mechanism.}
+    {\footnotesize \textbf{Hình 2:} Kết quả kiểm chứng đa luồng PrimeRun và cơ chế dừng thread StopTest.}
 \end{center}
 \end{solutionbox}
 
@@ -304,16 +309,16 @@ After close, is thread alive? false
 
 \subsubsection*{Multithread in Server Application:}
 \begin{itemize}
-    \item \textbf{Main window thread:} Runs Swing Event Dispatch Thread (GUI).
-    \item \textbf{Child thread (Listener):} Runs \texttt{serverSocket.accept()} in a loop to accept connections asynchronously without freezing the GUI.
-    \item \textbf{Grand-child thread (\texttt{ClientHandler}):} Spawned per connected client to manage data exchange and broadcast messages.
+    \item \textbf{Main window thread:} Chạy luồng giao diện Swing (Event Dispatch Thread).
+    \item \textbf{Child thread (Listener):} Chạy vòng lặp \texttt{serverSocket.accept()} ngầm để đón kết nối mới mà không làm treo giao diện Server.
+    \item \textbf{Grand-child thread (\texttt{ClientHandler}):} Tạo riêng cho từng Client kết nối để nhận dữ liệu và phát tin nhắn (broadcast).
 \end{itemize}
 
 \subsubsection*{Multithread in Client Application:}
 \begin{itemize}
-    \item \textbf{Main window thread:} Manages the connection setup dialog.
-    \item \textbf{Chat window thread:} Hosts the active chat window.
-    \item \textbf{Grand-child thread (Reader):} Background thread continuously reading from the socket \texttt{InputStream} and updating the UI via \texttt{SwingUtilities.invokeLater()}.
+    \item \textbf{Main window thread:} Quản lý form nhập thông tin ban đầu.
+    \item \textbf{Chat window thread:} Quản lý cửa sổ chat tương tác.
+    \item \textbf{Grand-child thread (Reader):} Luồng chạy nền liên tục đọc \texttt{InputStream} từ server và cập nhật tin nhắn lên giao diện bằng \texttt{SwingUtilities.invokeLater()}.
 \end{itemize}
 
 \newpage
@@ -321,24 +326,24 @@ After close, is thread alive? false
 \subsubsection*{Exercise 3:}
 \noindent\textit{Using multithread programming model to make the chat application can talk to many different users concurrently.}
 
-\begin{solutionbox}[title=Solution for Exercise 3: Concurrent Multi-User Chat Application]
-\textbf{1. Architecture \& Concurrency Highlights:}
+\begin{solutionbox}[title=Báo cáo \& Bài làm: Exercise 3 -- Ứng dụng Chat Đa luồng Đồng thời]
+\textbf{1. Kiến trúc Đa luồng \& Điểm nổi bật kỹ thuật:}
 \begin{itemize}
-    \item \textbf{Server Broadcast System:} Maintains an active client pool using \texttt{CopyOnWriteArrayList<ClientHandler>}. When a client sends a message, \texttt{broadcast()} relays it in real time to all connected clients.
-    \item \textbf{UTF-8 Encoding:} Reads and writes use \texttt{UTF-8} character streams, fully preserving Vietnamese accented characters.
-    \item \textbf{Clean Lifecycle Management:} When a chat window is closed, the client socket is gracefully closed, triggering server-side cleanup and notifying remaining users (\texttt{*** [user] left ***}).
+    \item \textbf{Cơ chế Broadcast an toàn:} Server quản lý danh sách client bằng \texttt{CopyOnWriteArrayList<ClientHandler>}. Khi một client gửi tin nhắn, Server chuyển tiếp tin nhắn thời gian thực đến toàn bộ các client đang online.
+    \item \textbf{Hỗ trợ Tiếng Việt (UTF-8):} Luồng nhập xuất sử dụng chuẩn \texttt{UTF-8}, đảm bảo gửi nhận tin nhắn tiếng Việt có dấu chuẩn xác.
+    \item \textbf{Đóng kết nối sạch sẽ:} Khi người dùng tắt cửa sổ chat, socket tự đóng an toàn, Server tự động xóa client khỏi danh sách và thông báo cho mọi người (\texttt{*** [Name] left ***}).
 \end{itemize}
 
-\textbf{2. Live Testing Demonstration:}
+\textbf{2. Kết quả Thử nghiệm Thực tế với 3 Thành viên Nhóm:}
 \begin{itemize}
-    \item \textbf{Setup:} \texttt{ChatServer} initialized on port 9999. Three simultaneous clients joined: \textbf{Thái}, \textbf{Sơn}, và \textbf{Bảo}.
-    \item \textbf{Broadcast Verification:} Messages sent from any client (e.g., \textit{"Xin chào mọi người!"}, \textit{"Chào Thái nhé!"}) are instantly received and rendered across all 3 client windows and the server log in real time without thread locks or lag.
+    \item \textbf{Kịch bản:} Khởi động \texttt{ChatServer} (Port 9999). Mở đồng thời 3 Client mang tên 3 thành viên: \textbf{Thái}, \textbf{Sơn}, và \textbf{Bảo}.
+    \item \textbf{Kiểm chứng:} Khi các thành viên gửi tin nhắn (ví dụ: \textit{"Xin chào mọi người!"}, \textit{"Chào Thái nhé!"}, \textit{"Cùng bắt đầu nào"}), tin nhắn lập tức xuất hiện đồng bộ ở cả 3 cửa sổ và trên bảng Log của Server theo thời gian thực mà không gặp bất kỳ lỗi xung đột hay trễ luồng nào.
 \end{itemize}
 
 \vspace{0.2cm}
 \begin{center}
     \includegraphics[width=0.88\textwidth]{images/Server_and_Client.jpg}\\[3pt]
-    {\footnotesize \textbf{Figure 3:} Real-time concurrent chat with ChatServer and 3 active clients (Thái, Sơn, Bảo).}
+    {\footnotesize \textbf{Hình 3:} Giao diện ứng dụng Chat đa luồng thời gian thực với Server và 3 client (Thái, Sơn, Bảo).}
 \end{center}
 \end{solutionbox}
 

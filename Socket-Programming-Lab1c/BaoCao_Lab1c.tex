@@ -22,6 +22,7 @@
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{tcolorbox}
+\usepackage{caption}
 
 % Thiết lập liên kết URL
 \hypersetup{
@@ -171,6 +172,13 @@ try (Socket socket = new Socket(host, 80)) {
     \item \textbf{Terminal output:} Successfully connected to Google server IP \texttt{142.251.157.119:80}, received \texttt{HTTP/1.0 200 OK}, and saved \texttt{89,926 bytes} to \texttt{homepage.html}.
     \item \textbf{Browser view:} Opening \texttt{homepage.html} renders the offline Google homepage layout. Search actions and remote logo images rely on relative URLs (\texttt{/search}), confirming the static HTML nature of socket downloads.
 \end{itemize}
+
+\vspace{0.2cm}
+\begin{center}
+    \includegraphics[width=0.48\textwidth]{images/homepage_log.jpg}\hfill
+    \includegraphics[width=0.48\textwidth]{images/homepage.jpg}\\[3pt]
+    {\footnotesize \textbf{Figure 1:} (Left) Terminal HTTP response log; (Right) Rendered \texttt{homepage.html} in browser.}
+\end{center}
 \end{solutionbox}
 
 \newpage
@@ -282,6 +290,12 @@ accept() exited with: java.net.SocketException: Socket closed
 Thread has stopped.
 After close, is thread alive? false
 \end{verbatim}
+
+\vspace{0.2cm}
+\begin{center}
+    \includegraphics[width=0.68\textwidth]{images/PrimeRun_and_StopTest.jpg}\\[3pt]
+    {\footnotesize \textbf{Figure 2:} Verification output of PrimeRun concurrency and StopTest thread stopping mechanism.}
+\end{center}
 \end{solutionbox}
 
 \vspace{0.4cm}
@@ -315,9 +329,15 @@ After close, is thread alive? false
 
 \textbf{2. Live Testing Demonstration:}
 \begin{itemize}
-    \item \textbf{Setup:} \texttt{ChatServer} initialized on port 9999. Three simultaneous clients joined: \textbf{Thái}, \textbf{Sơn}, and \textbf{Bảo}.
+    \item \textbf{Setup:} \texttt{ChatServer} initialized on port 9999. Three simultaneous clients joined: \textbf{Thái}, \textbf{Sơn}, và \textbf{Bảo}.
     \item \textbf{Broadcast Verification:} Messages sent from any client (e.g., \textit{"Xin chào mọi người!"}, \textit{"Chào Thái nhé!"}) are instantly received and rendered across all 3 client windows and the server log in real time without thread locks or lag.
 \end{itemize}
+
+\vspace{0.2cm}
+\begin{center}
+    \includegraphics[width=0.88\textwidth]{images/Server_and_Client.jpg}\\[3pt]
+    {\footnotesize \textbf{Figure 3:} Real-time concurrent chat with ChatServer and 3 active clients (Thái, Sơn, Bảo).}
+\end{center}
 \end{solutionbox}
 
 \vspace{0.5cm}

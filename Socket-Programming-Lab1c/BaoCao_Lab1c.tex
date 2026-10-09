@@ -38,7 +38,7 @@
 % Cấu hình Header & Footer giống file đề gốc của thầy, dùng ảnh Logo BK.png
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\includegraphics[height=14pt,keepaspectratio]{"images/Logo BK.png"}\hspace{6pt}\raisebox{2pt}{\small\sffamily Faculty of Computer Science and Engineering -- HCMC University of Technology}}
+\lhead{\includegraphics[height=20pt,keepaspectratio]{"images/Logo BK.png"}\hspace{8pt}\raisebox{4pt}{\small\sffamily Faculty of Computer Science and Engineering -- HCMC University of Technology}}
 \rhead{}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
@@ -83,20 +83,23 @@
 
 % ==================== PHẦN ĐẦU TRANG THEO FORM GỐC ====================
 \begin{center}
-    {\large \textbf{Computer Networks 1}}\\[2pt]
-    {\large \textbf{Lab 4}}\\[4pt]
+    {\large \textbf{Lab Computer Networks }}\\[2pt]
+    {\large \textbf{Lab 1c}}\\[4pt]
     {\Large \textbf{Socket Programming in Java: Chat Application}}\\[12pt]
 \end{center}
 
-\noindent
-\begin{tabularx}{\textwidth}{@{}l X l r@{}}
-\textbf{Group:} CN-L1 & & \textbf{GitHub:} & \href{https://github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}{Nguyen-Minh-Thai/Computer-Networks-Lab} \\
-\midrule
-\textbf{Members:} & 1. Nguyễn Minh Thái & \textbf{Student No.:} & 2413133 \\
-& 2. Nguyễn Lâm Sơn & \textbf{Student No.:} & 2413012 \\
-& 3. Nguyễn Quang Bảo & \textbf{Student No.:} & 2410276 \\
-\bottomrule
-\end{tabularx}
+\hline
+\begin{itemize}
+    \item \textbf{Group:} CN-L1
+    \item \textbf{Team Members:}
+    \begin{enumerate}
+        \item Nguyễn Minh Thái -- MSSV: 2413133
+        \item Nguyễn Lâm Sơn -- MSSV: 2413012
+        \item Nguyễn Quang Bảo -- MSSV: 2410276
+    \end{enumerate}
+    \item \textbf{Source Code Repository:} \url{https://github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}
+\end{itemize}
+\hline
 
 \vspace{0.4cm}
 
@@ -183,16 +186,18 @@ try (Socket socket = new Socket(host, 80)) {
     \item \textbf{Kết quả Terminal:} Kết nối thành công tới IP của Google (\texttt{142.251.157.119:80}), nhận mã phản hồi \texttt{HTTP/1.0 200 OK}, và lưu thành công \texttt{89,926 bytes} vào file \texttt{homepage.html}.
     \item \textbf{Kết quả trình duyệt:} Khi mở file \texttt{homepage.html} offline, cấu trúc trang chủ Google hiển thị đầy đủ (ô tìm kiếm, nút bấm). Nút tìm kiếm không hoạt động và logo không tải được do các tài nguyên này dùng đường dẫn tương đối (\texttt{/search}), đây là đặc điểm tự nhiên khi tải mã nguồn HTML tĩnh bằng Socket.
 \end{itemize}
+\end{solutionbox}
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.48\textwidth,height=5cm,keepaspectratio]{"images/homepage log.jpg"}\hfill
-    \includegraphics[width=0.48\textwidth,height=5cm,keepaspectratio]{"images/homepage.jpg"}\\[3pt]
-    {\footnotesize \textbf{Hình 1:} (Trái) Log phản hồi HTTP trên Terminal; (Phải) File \texttt{homepage.html} hiển thị trên trình duyệt.}
+    \includegraphics[width=0.7\textwidth]{images/homepage.jpg}
+\end{center}   
+\begin{center}
+    \includegraphics[width=0.9\textwidth]{images/homepage log.jpg}
 \end{center}
-\end{solutionbox}
-
+{\footnotesize\textbf{Hình 1:} (Trái) Log phản hồi HTTP trên Terminal; (Phải) File \texttt{homepage.html} hiển thị trên trình duyệt.}
 \vspace{0.4cm}
+% \newpage
 
 % ==================== 2. CHAT APPLICATION ====================
 \subsection*{2. Develop a simple chat application using client-server model}
@@ -275,7 +280,7 @@ public void run() {
 \begin{solutionbox}[title=Phân tích \& Giải thích: Cơ chế Dừng luồng khi bị tắc nghẽn ở accept()]
 \textbf{1. Hiện tượng xảy ra khi gọi \texttt{stop()} dùng \texttt{this.interrupt()}:}
 \begin{itemize}
-    \item \textbf{Kết luận:} \textbf{Luồng KHÔNG THỂ DỪNG ĐƯỢC! Luồng tiếp tục bị kẹt và sống mãi mãi.}
+    \item \textbf{Kết luận:} \textbf{Luồng Không thể dừng được Luồng tiếp tục bị kẹt và sống mãi mãi.}
 \end{itemize}
 
 \textbf{2. Bản chất nguyên nhân:}
@@ -303,13 +308,13 @@ accept() exited with: java.net.SocketException: Socket closed
 Thread has stopped.
 After close, is thread alive? false
 \end{verbatim}
+\end{solutionbox}
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.72\textwidth,height=6.5cm,keepaspectratio]{"images/PrimeRun and StopTest.jpg"}\\[3pt]
+    \includegraphics[width=0.40\textwidth]{images/PrimeRun and StopTest.jpg}\\[3pt]
     {\footnotesize \textbf{Hình 2:} Kết quả kiểm chứng đa luồng PrimeRun và cơ chế dừng thread StopTest.}
 \end{center}
-\end{solutionbox}
 
 \vspace{0.4cm}
 
@@ -336,7 +341,6 @@ After close, is thread alive? false
 \textbf{1. Kiến trúc Đa luồng \& Điểm nổi bật kỹ thuật:}
 \begin{itemize}
     \item \textbf{Cơ chế Broadcast an toàn:} Server quản lý danh sách client bằng \texttt{CopyOnWriteArrayList<ClientHandler>}. Khi một client gửi tin nhắn, Server chuyển tiếp tin nhắn thời gian thực đến toàn bộ các client đang online.
-    \item \textbf{Hỗ trợ Tiếng Việt (UTF-8):} Luồng nhập xuất sử dụng chuẩn \texttt{UTF-8}, đảm bảo gửi nhận tin nhắn tiếng Việt có dấu chuẩn xác.
     \item \textbf{Đóng kết nối sạch sẽ:} Khi người dùng tắt cửa sổ chat, socket tự đóng an toàn, Server tự động xóa client khỏi danh sách và thông báo cho mọi người (\texttt{*** [Name] left ***}).
 \end{itemize}
 
@@ -345,28 +349,14 @@ After close, is thread alive? false
     \item \textbf{Kịch bản:} Khởi động \texttt{ChatServer} (Port 9999). Mở đồng thời 3 Client mang tên 3 thành viên: \textbf{Thái}, \textbf{Sơn}, và \textbf{Bảo}.
     \item \textbf{Kiểm chứng:} Khi các thành viên gửi tin nhắn (ví dụ: \textit{"Xin chào mọi người!"}, \textit{"Chào Thái nhé!"}, \textit{"Cùng bắt đầu nào"}), tin nhắn lập tức xuất hiện đồng bộ ở cả 3 cửa sổ và trên bảng Log của Server theo thời gian thực mà không gặp bất kỳ lỗi xung đột hay trễ luồng nào.
 \end{itemize}
+\end{solutionbox}
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.88\textwidth,height=7cm,keepaspectratio]{"images/Server and Client.jpg"}\\[3pt]
-    {\footnotesize \textbf{Hình 3:} Giao diện ứng dụng Chat đa luồng thời gian thực với Server và 3 client (Thái, Sơn, Bảo).}
+    \includegraphics[width=0.8\textwidth]{images/Server and Client.jpg}\\[3pt]
+    {\footnotesize \textbf{Hình 3:} Giao diện ứng dụng Chat đa luồng thời gian thực với Server và 3 client.}
 \end{center}
-\end{solutionbox}
 
 \vspace{0.5cm}
-
-\section*{Summary \& Submission Details}
-\begin{itemize}
-    \item \textbf{Course:} Computer Networks 1 -- Lab 4 (Lab 1c)
-    \item \textbf{Group:} CN-L1
-    \item \textbf{Team Members:}
-    \begin{enumerate}
-        \item Nguyễn Minh Thái -- MSSV: 2413133
-        \item Nguyễn Lâm Sơn -- MSSV: 2413012
-        \item Nguyễn Quang Bảo -- MSSV: 2410276
-    \end{enumerate}
-    \item \textbf{Source Code Repository:} \url{https://github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}
-    \item \textbf{Included Files:} \texttt{DownloadHomepage.java}, \texttt{PrimeRun.java}, \texttt{StopTest.java}, \texttt{ChatServer.java}, \texttt{ChatClient.java}, \texttt{homepage.html}, \texttt{README.md}, \texttt{images/}.
-\end{itemize}
 
 \end{document}

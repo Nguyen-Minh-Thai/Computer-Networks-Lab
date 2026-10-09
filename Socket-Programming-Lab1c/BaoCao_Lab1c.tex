@@ -22,7 +22,11 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,listings}
 \usepackage{caption}
+
+% Thiết lập đường dẫn tìm ảnh (tìm cả trong thư mục images/ lẫn thư mục gốc)
+\graphicspath{{images/}{./images/}{./}}
 
 % Thiết lập liên kết URL
 \hypersetup{
@@ -31,7 +35,7 @@
     urlcolor=blue!80!black
 }
 
-% Cấu hình Header & Footer giống file đề gốc của thầy, dùng Logo BK.png
+% Cấu hình Header & Footer giống file đề gốc của thầy, dùng ảnh Logo BK.png
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\includegraphics[height=14pt,keepaspectratio]{"images/Logo BK.png"}\hspace{6pt}\raisebox{2pt}{\small\sffamily Faculty of Computer Science and Engineering -- HCMC University of Technology}}
@@ -39,7 +43,7 @@
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
 
-% Cấu hình listings hiển thị code
+% Cấu hình listings hiển thị code Java
 \lstset{
     language=Java,
     basicstyle=\fontsize{9}{11}\ttfamily,
@@ -56,7 +60,7 @@
     backgroundcolor=\color{gray!5}
 }
 
-% Box ghi chú câu trả lời của sinh viên: breakable chống tràn trang
+% Cấu hình khung Lời giải của sinh viên: Tự động ngắt trang (breakable), không bao giờ bị tràn
 \newtcolorbox{solutionbox}[1][]{
     colback=blue!2!white,
     colframe=blue!70!black,
@@ -64,7 +68,14 @@
     title=Báo cáo \& Bài làm của Sinh viên,
     breakable,
     enhanced,
+    boxrule=0.8pt,
+    left=3mm,
+    right=3mm,
+    top=2.5mm,
+    bottom=2.5mm,
     pad at break=2mm,
+    before skip=6pt,
+    after skip=8pt,
     #1
 }
 
@@ -175,13 +186,13 @@ try (Socket socket = new Socket(host, 80)) {
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.48\textwidth]{"images/homepage log.jpg"}\hfill
-    \includegraphics[width=0.48\textwidth]{"images/homepage.jpg"}\\[3pt]
+    \includegraphics[width=0.48\textwidth,height=5cm,keepaspectratio]{"images/homepage log.jpg"}\hfill
+    \includegraphics[width=0.48\textwidth,height=5cm,keepaspectratio]{"images/homepage.jpg"}\\[3pt]
     {\footnotesize \textbf{Hình 1:} (Trái) Log phản hồi HTTP trên Terminal; (Phải) File \texttt{homepage.html} hiển thị trên trình duyệt.}
 \end{center}
 \end{solutionbox}
 
-\newpage
+\vspace{0.4cm}
 
 % ==================== 2. CHAT APPLICATION ====================
 \subsection*{2. Develop a simple chat application using client-server model}
@@ -243,7 +254,7 @@ new Thread(p).start();
 \end{itemize}
 \end{solutionbox}
 
-\newpage
+\vspace{0.4cm}
 
 \subsubsection*{Stop a thread:}
 \noindent\textit{Try to use \texttt{Thread.interrupt()} as in the following code and see what happens.}
@@ -295,7 +306,7 @@ After close, is thread alive? false
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.72\textwidth]{"images/PrimeRun and StopTest.jpg"}\\[3pt]
+    \includegraphics[width=0.72\textwidth,height=6.5cm,keepaspectratio]{"images/PrimeRun and StopTest.jpg"}\\[3pt]
     {\footnotesize \textbf{Hình 2:} Kết quả kiểm chứng đa luồng PrimeRun và cơ chế dừng thread StopTest.}
 \end{center}
 \end{solutionbox}
@@ -316,7 +327,7 @@ After close, is thread alive? false
     \item \textbf{Grand-child thread (Reader):} Luồng chạy nền liên tục đọc \texttt{InputStream} từ server và cập nhật tin nhắn lên giao diện bằng \texttt{SwingUtilities.invokeLater()}.
 \end{itemize}
 
-\newpage
+\vspace{0.4cm}
 
 \subsubsection*{Exercise 3:}
 \noindent\textit{Using multithread programming model to make the chat application can talk to many different users concurrently.}
@@ -337,7 +348,7 @@ After close, is thread alive? false
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.88\textwidth]{"images/Server and Client.jpg"}\\[3pt]
+    \includegraphics[width=0.88\textwidth,height=7cm,keepaspectratio]{"images/Server and Client.jpg"}\\[3pt]
     {\footnotesize \textbf{Hình 3:} Giao diện ứng dụng Chat đa luồng thời gian thực với Server và 3 client (Thái, Sơn, Bảo).}
 \end{center}
 \end{solutionbox}

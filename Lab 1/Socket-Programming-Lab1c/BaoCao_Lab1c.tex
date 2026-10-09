@@ -210,16 +210,115 @@ try (Socket socket = new Socket(host, 80)) {
 \subsection*{2. Develop a simple chat application using client-server model}
 
 \begin{center}
+\begin{tikzpicture}[
+    scale=0.92, every node/.style={transform shape},
+    steptext/.style={align=center, font=\sffamily\footnotesize},
+    bluearr/.style={->, >=stealth, very thick, blue!80!black},
+    redarr/.style={->, >=stealth, very thick, red!85!black}
+]
+    % Khung bao ngoai so do
+    \draw[draw=black!70, thick] (-4.0, -7.4) rectangle (5.8, 1.5);
+
+    % --- PHIA SERVER (Ben trai) ---
+    \node[steptext] (s1) at (-1.5, 0.6) {
+        create socket,\\
+        port=x, for\\
+        incoming request:\\
+        {\color{red!85!black}\textbf{welcomeSocket =}}\\
+        {\color{red!85!black}\textbf{ServerSocket()}}
+    };
+
+    \node[steptext] (s2) at (-1.5, -1.4) {
+        wait for incoming\\
+        connection request\\
+        {\color{red!85!black}\textbf{connectionSocket =}}\\
+        {\color{red!85!black}\textbf{welcomeSocket.accept()}}
+    };
+
+    \node[steptext] (s3) at (-1.5, -3.4) {
+        read request from\\
+        {\color{red!85!black}\textbf{connectionSocket}}
+    };
+
+    \node[steptext] (s4) at (-1.5, -4.7) {
+        write reply to\\
+        {\color{red!85!black}\textbf{connectionSocket}}
+    };
+
+    \node[steptext] (s5) at (-1.5, -6.1) {
+        close\\
+        {\color{red!85!black}\textbf{connectionSocket}}
+    };
+
+    % Cac mui ten xanh phia Server
+    \draw[bluearr] (s1) -- (s2);
+    \draw[bluearr] (s2) -- (s3);
+    \draw[bluearr] (s3) -- (s4);
+    \draw[bluearr] (s4) -- (s5);
+
+    % Mui ten xanh vong lai tu close len wait
+    \draw[bluearr] (s5.south) -- ++(0,-0.3) -- (-3.4, -6.8) -- (-3.4, -1.0) -- (s2.west);
+
+    % --- PHIA CLIENT (Ben phai) ---
+    \node[steptext] (c1) at (3.6, -1.4) {
+        create socket,\\
+        connect to hostid, port=x\\
+        {\color{red!85!black}\textbf{clientSocket =}}\\
+        {\color{red!85!black}\textbf{Socket()}}
+    };
+
+    \node[steptext] (c2) at (3.6, -2.8) {
+        send request using\\
+        {\color{red!85!black}\textbf{clientSocket}}
+    };
+
+    \node[steptext] (c3) at (3.6, -5.2) {
+        read reply from\\
+        {\color{red!85!black}\textbf{clientSocket}}
+    };
+
+    \node[steptext] (c4) at (3.6, -6.4) {
+        close\\
+        {\color{red!85!black}\textbf{clientSocket}}
+    };
+
+    % Cac mui ten xanh phia Client
+    \draw[bluearr] (c1) -- (c2);
+    \draw[bluearr] (c2) -- (c3);
+    \draw[bluearr] (c3) -- (c4);
+
+    % --- GIAO TIEP MANG (Mau do) ---
+    % 1. TCP connection setup (mui ten 2 chieu dut net)
+    \draw[<->, >=stealth, dashed, very thick, red!85!black] (s2.east) -- node[above=1pt, font=\sffamily\bfseries\footnotesize, text=red!85!black]{TCP} node[below=1pt, font=\sffamily\bfseries\footnotesize, text=red!85!black]{connection setup} (c1.west);
+
+    % 2. Request tu Client sang Server
+    \draw[redarr] (c2.west) -- (s3.east);
+
+    % 3. Reply tu Server sang Client
+    \draw[redarr] (s4.east) -- (c3.west);
+
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
 \begin{tabularx}{\textwidth}{|X|X|}
 \hline
 \textbf{Server application} & \textbf{Client application} \\
 \hline
-Create a server socket & Identify server IP and port \\
-Listen and wait for incoming connection request & Create a TCP socket to the server \\
-& Establish a connection to the server \\
+Create a server socket & \\
+\hline
+Listen and wait for incoming connection request & Identify server IP and port \\
+\hline
+ & Create a TCP socket to the server \\
+ & Establish a connection to the server \\
+\hline
 Accept the connection request & \\
+\hline
 Send/Receive data & Send/Receive data \\
-Close connection & Close connection \\
+\hline
+ & Close connection \\
+\hline
+Close connection & \\
 \hline
 \end{tabularx}
 \end{center}

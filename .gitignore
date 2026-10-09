@@ -4,3 +4,7 @@
 
 # Log files
 *.log
+
+# Ignore root leftover if locked
+/Sol Lab1b.pdf
+

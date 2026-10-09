@@ -2,13 +2,36 @@
 
 Repository for Computer Networks course laboratory assignments at Faculty of Computer Science and Engineering, Ho Chi Minh City University of Technology (HCMUT).
 
-## Lab List
+## Repository Structure
 
-| Lab Folder | Topic | Technology | Status |
+```text
+Computer-Networks-Lab/
+└── Lab 1/
+    ├── Socket-Programming-Lab1c/
+    │   ├── BaoCao_Lab1c.tex
+    │   ├── images/
+    │   ├── DownloadHomepage.java
+    │   ├── ChatServer.java
+    │   ├── ChatClient.java
+    │   ├── PrimeRun.java
+    │   ├── StopTest.java
+    │   ├── homepage.html
+    │   ├── Lab_1c_Socket Programming in Java.pdf
+    │   └── README.md
+    ├── Lab_1a_Network Devices.pdf
+    ├── Lab_1b_Wireshark_Intro_v8.0.pdf
+    ├── Sol Lab1a.pdf
+    ├── Sol Lab1b.pdf
+    └── Sol Lab1c.pdf
+```
+
+## Lab Overview
+
+| Component | Topic | Technology / Content | Status |
 | :--- | :--- | :--- | :--- |
-| [`Socket-Programming-Lab1c`](./Socket-Programming-Lab1c/) | Socket Programming & Multithreaded Chat App | Java, Sockets, Swing, Multithreading | Completed |
-| `Lab-1a-Network-Devices` | Network Devices Overview | Networking | In Progress / Reference |
-| `Lab-1b-Wireshark` | Wireshark Packet Sniffing Intro | Wireshark, HTTP/TCP | In Progress / Reference |
+| **Lab 1a** | Network Devices | Network hardware overview | Completed |
+| **Lab 1b** | Wireshark Introduction | Packet sniffing, HTTP/TCP analysis | Completed |
+| **Lab 1c** | Socket Programming & Multithreaded Chat | Java Sockets, Swing GUI, Multithreading | Completed |
 
 ---
 
@@ -16,4 +39,3 @@ Repository for Computer Networks course laboratory assignments at Faculty of Com
 - **Nguyễn Minh Thái** - MSSV: 2413133 (GitHub: [Nguyen-Minh-Thai](https://github.com/Nguyen-Minh-Thai))
 - **Nguyễn Lâm Sơn** - MSSV: 2413012
 - **Nguyễn Quang Bảo** - MSSV: 2410276
-

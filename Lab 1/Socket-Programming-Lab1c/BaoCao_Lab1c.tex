@@ -1,32 +1,29 @@
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[utf8]{vietnam}
+\usepackage[T5,T1]{fontenc}
+\usepackage[vietnamese]{babel}
 \usepackage{geometry}
 \geometry{
     top=20mm,
-    bottom=22mm,
+    bottom=20mm,
     left=22mm,
     right=22mm,
-    headheight=18pt,
+    headheight=15pt,
     headsep=12pt
 }
 
 \usepackage{graphicx}
-\usepackage[space]{grffile}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{tikz}
 \usepackage{amsmath}
-\usepackage[most]{tcolorbox}
-\tcbuselibrary{breakable,listings}
+\usepackage{tcolorbox}
 \usepackage{caption}
-
-% Thiết lập đường dẫn tìm ảnh (tìm cả trong thư mục images/ lẫn thư mục gốc)
-\graphicspath{{images/}{./images/}{./}}
 
 % Thiết lập liên kết URL
 \hypersetup{
@@ -35,15 +32,22 @@
     urlcolor=blue!80!black
 }
 
-% Cấu hình Header & Footer giống file đề gốc của thầy, dùng ảnh Logo BK.png
+% Định nghĩa Logo BK bằng TikZ để biên dịch độc lập không cần file ảnh ngoài
+\newcommand{\bklogo}{%
+    \begin{tikzpicture}[baseline=(bk.base)]
+        \node[draw=blue!80!black, fill=blue!80!black, text=white, font=\bfseries\sffamily\scriptsize, rounded corners=1.5pt, inner sep=2.5pt] (bk) {BK};
+    \end{tikzpicture}%
+}
+
+% Cấu hình Header & Footer giống file đề gốc của thầy
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\includegraphics[height=20pt,keepaspectratio]{"images/Logo BK.png"}\hspace{8pt}\raisebox{4pt}{\small\sffamily Faculty of Computer Science and Engineering -- HCMC University of Technology}}
-\rhead{}
+\rhead{\raisebox{4pt}{\small\sffamily Computer Networks (CO3093)}}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
 
-% Cấu hình listings hiển thị code Java
+% Cấu hình listings hiển thị code
 \lstset{
     language=Java,
     basicstyle=\fontsize{9}{11}\ttfamily,
@@ -60,22 +64,12 @@
     backgroundcolor=\color{gray!5}
 }
 
-% Cấu hình khung Lời giải của sinh viên: Tự động ngắt trang (breakable), không bao giờ bị tràn
+% Box ghi chú câu trả lời của sinh viên (Viết bằng Tiếng Việt)
 \newtcolorbox{solutionbox}[1][]{
     colback=blue!2!white,
     colframe=blue!70!black,
     fonttitle=\bfseries\sffamily,
     title=Báo cáo \& Bài làm của Sinh viên,
-    breakable,
-    enhanced,
-    boxrule=0.8pt,
-    left=3mm,
-    right=3mm,
-    top=2.5mm,
-    bottom=2.5mm,
-    pad at break=2mm,
-    before skip=6pt,
-    after skip=8pt,
     #1
 }
 
@@ -88,6 +82,7 @@
     {\Large \textbf{Socket Programming in Java: Chat Application}}\\[12pt]
 \end{center}
 
+\noindent
 \hline
 \begin{itemize}
     \item \textbf{Group:} CN-L1
@@ -100,8 +95,6 @@
     \item \textbf{Source Code Repository:} \url{https://github.com/Nguyen-Minh-Thai/Computer-Networks-Lab}
 \end{itemize}
 \hline
-
-\vspace{0.4cm}
 
 % ==================== I. OBJECTIVES ====================
 \section*{I. Objectives}
@@ -140,13 +133,19 @@ Ex.: You can test your program with: www.google.com}
 \textbf{1. Phân tích \& Nguyên lý hoạt động (\texttt{DownloadHomepage.java}):}
 \begin{itemize}
     \item \textbf{Khởi tạo kết nối TCP:} Tạo socket kết nối tới cổng 80 (cổng HTTP mặc định) của máy chủ \texttt{www.google.com}.
+    \vspace{-0.2cm}
     \item \textbf{Gửi bản tin HTTP Request:} Gửi yêu cầu HTTP GET theo phiên bản \texttt{HTTP/1.0}:
+
+    \vspace{-0.4cm}
     \begin{verbatim}
     GET / HTTP/1.0\r\n
     Host: www.google.com\r\n
     User-Agent: Mozilla/5.0\r\n\r\n
     \end{verbatim}
+    \vspace{-0.8cm}
+    
     Việc dùng \texttt{HTTP/1.0} đảm bảo máy chủ tự động ngắt kết nối sau khi gửi hết dữ liệu, giúp luồng đọc nhận biết điểm kết thúc (\texttt{-1}).
+    \vspace{-0.2cm}
     \item \textbf{Tách Header và lưu Body:} Đọc toàn bộ luồng byte vào bộ đệm, quét tìm chuỗi phân cách chuẩn \texttt{\textbackslash r\textbackslash n\textbackslash r\textbackslash n}. In toàn bộ HTTP Header ra màn hình và trích xuất phần Body lưu vào file \texttt{homepage.html}.
 \end{itemize}
 
@@ -173,13 +172,9 @@ try (Socket socket = new Socket(host, 80)) {
             break;
         }
     }
-
-    // In HTTP response header ra man hinh
     int headerLen = (bodyStart < 0) ? data.length : bodyStart;
-    System.out.println("----- HTTP response header -----");
-    System.out.println(new String(data, 0, headerLen, "ISO-8859-1"));
-
-    // Luu noi dung body vao homepage.html
+            System.out.println("----- HTTP response header -----");
+            System.out.println(new String(data, 0, headerLen, "ISO-8859-1"));
     if (bodyStart >= 0) {
         try (FileOutputStream file = new FileOutputStream("homepage.html")) {
             file.write(data, bodyStart, data.length - bodyStart);
@@ -191,13 +186,17 @@ try (Socket socket = new Socket(host, 80)) {
 \textbf{3. Kết quả thực nghiệm \& Nhận xét:}
 \begin{itemize}
     \item \textbf{Kết quả Terminal:} Kết nối thành công tới IP của Google (\texttt{142.251.157.119:80}), nhận mã phản hồi \texttt{HTTP/1.0 200 OK}, và lưu thành công \texttt{89,926 bytes} vào file \texttt{homepage.html}.
+    \vspace{-0.2cm}
     \item \textbf{Kết quả trình duyệt:} Khi mở file \texttt{homepage.html} offline, cấu trúc trang chủ Google hiển thị đầy đủ (ô tìm kiếm, nút bấm). Nút tìm kiếm không hoạt động và logo không tải được do các tài nguyên này dùng đường dẫn tương đối (\texttt{/search}), đây là đặc điểm tự nhiên khi tải mã nguồn HTML tĩnh bằng Socket.
 \end{itemize}
+
+
 \end{solutionbox}
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.7\textwidth]{images/homepage.jpg}
+ \includegraphics[width=0.7\textwidth]{images/homepage.jpg}
+    
 \end{center}   
 \begin{center}
     \includegraphics[width=0.9\textwidth]{images/homepage log.jpg}
@@ -211,16 +210,13 @@ try (Socket socket = new Socket(host, 80)) {
 
 \begin{center}
 \begin{tikzpicture}[
-    scale=0.92, every node/.style={transform shape},
-    steptext/.style={align=center, font=\sffamily\footnotesize},
+    scale=0.8, every node/.style={transform shape},
+    steptext/.style={align=center, font=\sffamily\small},
     bluearr/.style={->, >=stealth, very thick, blue!80!black},
     redarr/.style={->, >=stealth, very thick, red!85!black}
 ]
-    % Khung bao ngoai so do
-    \draw[draw=black!70, thick] (-4.0, -7.4) rectangle (5.8, 1.5);
-
-    % --- PHIA SERVER (Ben trai) ---
-    \node[steptext] (s1) at (-1.5, 0.6) {
+    % --- PHÍA SERVER (Bên trái) ---
+    \node[steptext] (s1) at (-2.0, 0.8) {
         create socket,\\
         port=x, for\\
         incoming request:\\
@@ -228,74 +224,82 @@ try (Socket socket = new Socket(host, 80)) {
         {\color{red!85!black}\textbf{ServerSocket()}}
     };
 
-    \node[steptext] (s2) at (-1.5, -1.4) {
+    \node[steptext] (s2) at (-2.0, -1.8) {
         wait for incoming\\
         connection request\\
         {\color{red!85!black}\textbf{connectionSocket =}}\\
         {\color{red!85!black}\textbf{welcomeSocket.accept()}}
     };
 
-    \node[steptext] (s3) at (-1.5, -3.4) {
+    \node[steptext] (s3) at (-2.0, -3.8) {
         read request from\\
         {\color{red!85!black}\textbf{connectionSocket}}
     };
 
-    \node[steptext] (s4) at (-1.5, -4.7) {
+    \node[steptext] (s4) at (-2.0, -5.2) {
         write reply to\\
         {\color{red!85!black}\textbf{connectionSocket}}
     };
 
-    \node[steptext] (s5) at (-1.5, -6.1) {
+    \node[steptext] (s5) at (-2.0, -6.5) {
         close\\
         {\color{red!85!black}\textbf{connectionSocket}}
     };
 
-    % Cac mui ten xanh phia Server
-    \draw[bluearr] (s1) -- (s2);
-    \draw[bluearr] (s2) -- (s3);
-    \draw[bluearr] (s3) -- (s4);
-    \draw[bluearr] (s4) -- (s5);
-
-    % Mui ten xanh vong lai tu close len wait
-    \draw[bluearr] (s5.south) -- ++(0,-0.3) -- (-3.4, -6.8) -- (-3.4, -1.0) -- (s2.west);
-
-    % --- PHIA CLIENT (Ben phai) ---
-    \node[steptext] (c1) at (3.6, -1.4) {
+    % --- PHÍA CLIENT (Bên phải) ---
+    \node[steptext] (c1) at (4.6, -1.8) {
         create socket,\\
         connect to hostid, port=x\\
         {\color{red!85!black}\textbf{clientSocket =}}\\
         {\color{red!85!black}\textbf{Socket()}}
     };
 
-    \node[steptext] (c2) at (3.6, -2.8) {
+    \node[steptext] (c2) at (4.6, -3.5) {
         send request using\\
         {\color{red!85!black}\textbf{clientSocket}}
     };
 
-    \node[steptext] (c3) at (3.6, -5.2) {
+    \node[steptext] (c3) at (4.6, -5.4) {
         read reply from\\
         {\color{red!85!black}\textbf{clientSocket}}
     };
 
-    \node[steptext] (c4) at (3.6, -6.4) {
+    \node[steptext] (c4) at (4.6, -6.6) {
         close\\
         {\color{red!85!black}\textbf{clientSocket}}
     };
 
-    % Cac mui ten xanh phia Client
+    % --- CÁC MŨI TÊN NỘI BỘ (XANH) ---
+    \draw[bluearr] (s1) -- (s2) coordinate[midway] (arrow_mid);
+    \draw[bluearr] (s2) -- (s3);
+    \draw[bluearr] (s3) -- (s4);
+    \draw[bluearr] (s4) -- (s5);
+
+    % Mũi tên vòng lặp bên trái:
+    % 1. Đi xuống (-7.1) kéo dài qua chữ một chút
+    % 2. Đi ngang sang left (-5.2)
+    % 3. Đi thẳng đứng lên đúng tọa độ y của (arrow_mid)
+    % 4. Đi ngang sang right chỉ vuông góc vào thân mũi tên (arrow_mid)
+    \draw[bluearr] (s5.south) -- (-2.0, -7.1) -- (-5.2, -7.1) |- (arrow_mid);
+
     \draw[bluearr] (c1) -- (c2);
     \draw[bluearr] (c2) -- (c3);
     \draw[bluearr] (c3) -- (c4);
 
-    % --- GIAO TIEP MANG (Mau do) ---
-    % 1. TCP connection setup (mui ten 2 chieu dut net)
-    \draw[<->, >=stealth, dashed, very thick, red!85!black] (s2.east) -- node[above=1pt, font=\sffamily\bfseries\footnotesize, text=red!85!black]{TCP} node[below=1pt, font=\sffamily\bfseries\footnotesize, text=red!85!black]{connection setup} (c1.west);
+    % --- GIAO TIẾP MẠNG (ĐỎ) ---
+    % 1. TCP connection setup
+    \draw[<->, >=stealth, dashed, line width=1.5pt, red!85!black] (0.1, -1.8) -- (2.3, -1.8)
+        node[midway, above=1pt, font=\sffamily\bfseries\small, text=red!85!black]{TCP}
+        node[midway, below=1pt, font=\sffamily\bfseries\small, text=red!85!black]{connection setup};
 
-    % 2. Request tu Client sang Server
+    % 2. Request từ Client sang Server
     \draw[redarr] (c2.west) -- (s3.east);
 
-    % 3. Reply tu Server sang Client
+    % 3. Reply từ Server sang Client
     \draw[redarr] (s4.east) -- (c3.west);
+
+    % --- KHUNG BAO NGOÀI ---
+    \draw[draw=black!80, thick] (-5.6, -7.6) rectangle (6.8, 2.2);
 
 \end{tikzpicture}
 \end{center}
@@ -365,7 +369,7 @@ new Thread(p).start();
 \end{itemize}
 \end{solutionbox}
 
-\vspace{0.4cm}
+\newpage 
 
 \subsubsection*{Stop a thread:}
 \noindent\textit{Try to use \texttt{Thread.interrupt()} as in the following code and see what happens.}
@@ -414,15 +418,19 @@ accept() exited with: java.net.SocketException: Socket closed
 Thread has stopped.
 After close, is thread alive? false
 \end{verbatim}
+
+
 \end{solutionbox}
 
-\vspace{0.2cm}
+\newpage
+
+\vspace{0.5cm}
 \begin{center}
     \includegraphics[width=0.40\textwidth]{images/PrimeRun and StopTest.jpg}\\[3pt]
     {\footnotesize \textbf{Hình 2:} Kết quả kiểm chứng đa luồng PrimeRun và cơ chế dừng thread StopTest.}
 \end{center}
 
-\vspace{0.4cm}
+
 
 \subsubsection*{Multithread in Server Application:}
 \begin{itemize}
@@ -440,6 +448,8 @@ After close, is thread alive? false
 
 \vspace{0.4cm}
 
+\newpage
+
 \subsubsection*{Exercise 3:}
 \noindent\textit{Using multithread programming model to make the chat application can talk to many different users concurrently.}
 
@@ -455,14 +465,19 @@ After close, is thread alive? false
     \item \textbf{Kịch bản:} Khởi động \texttt{ChatServer} (Port 9999). Mở đồng thời 3 Client mang tên 3 thành viên: \textbf{Thái}, \textbf{Sơn}, và \textbf{Bảo}.
     \item \textbf{Kiểm chứng:} Khi các thành viên gửi tin nhắn (ví dụ: \textit{"Xin chào mọi người!"}, \textit{"Chào Thái nhé!"}, \textit{"Cùng bắt đầu nào"}), tin nhắn lập tức xuất hiện đồng bộ ở cả 3 cửa sổ và trên bảng Log của Server theo thời gian thực mà không gặp bất kỳ lỗi xung đột hay trễ luồng nào.
 \end{itemize}
+
+
 \end{solutionbox}
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.8\textwidth]{images/Server and Client.jpg}\\[3pt]
+    \includegraphics[width=0.8\textwidth]{images/Server Client.png}\\[3pt]
     {\footnotesize \textbf{Hình 3:} Giao diện ứng dụng Chat đa luồng thời gian thực với Server và 3 client.}
 \end{center}
 
+
 \vspace{0.5cm}
+
+
 
 \end{document}

@@ -173,6 +173,13 @@ try (Socket socket = new Socket(host, 80)) {
             break;
         }
     }
+
+    // In HTTP response header ra man hinh
+    int headerLen = (bodyStart < 0) ? data.length : bodyStart;
+    System.out.println("----- HTTP response header -----");
+    System.out.println(new String(data, 0, headerLen, "ISO-8859-1"));
+
+    // Luu noi dung body vao homepage.html
     if (bodyStart >= 0) {
         try (FileOutputStream file = new FileOutputStream("homepage.html")) {
             file.write(data, bodyStart, data.length - bodyStart);

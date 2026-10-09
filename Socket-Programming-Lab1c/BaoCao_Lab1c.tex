@@ -1,28 +1,27 @@
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[T5,T1]{fontenc}
-\usepackage[vietnamese,english]{babel}
+\usepackage[utf8]{vietnam}
 \usepackage{geometry}
 \geometry{
     top=20mm,
     bottom=22mm,
     left=22mm,
     right=22mm,
-    headheight=15pt,
+    headheight=18pt,
     headsep=12pt
 }
 
 \usepackage{graphicx}
+\usepackage[space]{grffile}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{tabularx}
 \usepackage{booktabs}
-\usepackage{tikz}
 \usepackage{amsmath}
-\usepackage{tcolorbox}
+\usepackage[most]{tcolorbox}
 \usepackage{caption}
 
 % Thiết lập liên kết URL
@@ -32,17 +31,10 @@
     urlcolor=blue!80!black
 }
 
-% Định nghĩa Logo BK bằng TikZ để biên dịch độc lập không cần file ảnh ngoài
-\newcommand{\bklogo}{%
-    \begin{tikzpicture}[baseline=(bk.base)]
-        \node[draw=blue!80!black, fill=blue!80!black, text=white, font=\bfseries\sffamily\scriptsize, rounded corners=1.5pt, inner sep=2.5pt] (bk) {BK};
-    \end{tikzpicture}%
-}
-
-% Cấu hình Header & Footer giống file đề gốc của thầy
+% Cấu hình Header & Footer giống file đề gốc của thầy, dùng Logo BK.png
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\bklogo\hspace{6pt}\small\sffamily Faculty of Computer Science and Engineering -- HCMC University of Technology}
+\lhead{\includegraphics[height=14pt,keepaspectratio]{"images/Logo BK.png"}\hspace{6pt}\raisebox{2pt}{\small\sffamily Faculty of Computer Science and Engineering -- HCMC University of Technology}}
 \rhead{}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
@@ -64,12 +56,15 @@
     backgroundcolor=\color{gray!5}
 }
 
-% Box ghi chú câu trả lời của sinh viên (Viết bằng Tiếng Việt)
+% Box ghi chú câu trả lời của sinh viên: breakable chống tràn trang
 \newtcolorbox{solutionbox}[1][]{
     colback=blue!2!white,
     colframe=blue!70!black,
     fonttitle=\bfseries\sffamily,
     title=Báo cáo \& Bài làm của Sinh viên,
+    breakable,
+    enhanced,
+    pad at break=2mm,
     #1
 }
 
@@ -180,8 +175,8 @@ try (Socket socket = new Socket(host, 80)) {
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.48\textwidth]{images/homepage_log.jpg}\hfill
-    \includegraphics[width=0.48\textwidth]{images/homepage.jpg}\\[3pt]
+    \includegraphics[width=0.48\textwidth]{"images/homepage log.jpg"}\hfill
+    \includegraphics[width=0.48\textwidth]{"images/homepage.jpg"}\\[3pt]
     {\footnotesize \textbf{Hình 1:} (Trái) Log phản hồi HTTP trên Terminal; (Phải) File \texttt{homepage.html} hiển thị trên trình duyệt.}
 \end{center}
 \end{solutionbox}
@@ -300,7 +295,7 @@ After close, is thread alive? false
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.68\textwidth]{images/PrimeRun_and_StopTest.jpg}\\[3pt]
+    \includegraphics[width=0.72\textwidth]{"images/PrimeRun and StopTest.jpg"}\\[3pt]
     {\footnotesize \textbf{Hình 2:} Kết quả kiểm chứng đa luồng PrimeRun và cơ chế dừng thread StopTest.}
 \end{center}
 \end{solutionbox}
@@ -342,7 +337,7 @@ After close, is thread alive? false
 
 \vspace{0.2cm}
 \begin{center}
-    \includegraphics[width=0.88\textwidth]{images/Server_and_Client.jpg}\\[3pt]
+    \includegraphics[width=0.88\textwidth]{"images/Server and Client.jpg"}\\[3pt]
     {\footnotesize \textbf{Hình 3:} Giao diện ứng dụng Chat đa luồng thời gian thực với Server và 3 client (Thái, Sơn, Bảo).}
 \end{center}
 \end{solutionbox}
